@@ -198,7 +198,7 @@ async function main() {
                                     if (telge_regex.test(email.html)) {
                                         printer = process.env.TELGE_PRINTER_MAILPRINT_NAME
                                     }
-                                    if(process.env.SERVER_OS == "linux") {
+                                    if(process.env.SERVER_OS == "linux" && process.env.PRINT_PHYSICAL == 'true') {
                                         exec('lp -d ' + printer + ' ' + maildirPath + '/' + filename + '.pdf', (error, stdout, stderr) => {
                                             if (error) {
                                                 logger.log('error', `${error}`)
