@@ -1,0 +1,29 @@
+version: "3.6"
+
+services:
+  mailprint:
+    container_name: "mailprint"
+    image: ghcr.io/kth-biblioteket/mailprint:${REPO_TYPE}
+    env_file:
+      - mailprint.env
+    networks:
+      - "apps-net"
+    restart: "always"
+    volumes:
+      - "${MAILDIR_HOST}:/maildir"
+      - "${SPOOLDIR_HOST}:/var/spool/cups"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailprint.rule=Host(`${DOMAIN_NAME}`)"
+      #- "traefik.http.routers.mailprint.middlewares=mailprint-stripprefix"
+      #- "traefik.http.middlewares.mailprint-stripprefix.stripprefix.prefixes=${PATHPREFIX}"
+      - "traefik.http.routers.mailprint.entrypoints=websecure"
+      - "traefik.http.routers.mailprint.tls=true"
+      - "traefik.http.routers.mailprint.tls.certresolver=myresolver"
+      - "traefik.http.routers.mailprint.middlewares=mailprint-auth"
+      - "traefik.http.middlewares.mailprint-auth.basicauth.usersfile=${USERSFILE}"
+    
+
+networks:
+  apps-net:
+    external: true
