@@ -117,6 +117,15 @@ async function main() {
                                 } else {
                                     logger.log('error', "Key is not valid from sender: " + email.from);
                                     console.log("Key not valid")
+                                    //Flytta mailet till error-folder
+                                    const moveTo = process.env.ERROR_FOLDER;
+                                    imap.move(uid, moveTo, function(err) {
+                                        if (err) {
+                                            console.log(err);
+                                        }
+                                        logger.log('info', 'mail ' + uid + ' moved to ' + printer);
+                                    });
+                                    return;
                                 }
                                 //Se till att låntagarens barcode kommer med på fakturautskriften
                                 if(email.subject == "Lost Items Bill" || email.subject == "Lost Item Bill" || email.subject == "Räkning för borttappat material") {
