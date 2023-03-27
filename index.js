@@ -205,7 +205,7 @@ async function main() {
                                     await page.pdf({ format: "a5", path: maildirPath + '/' + filename + '.pdf', margin: printmargin });
                                     await browser.close();
 
-                                    let user = email.from
+                                    let user = email.from.value[0].address
                                     let hold_job = '-o job-hold-until=indefinite'
                                     //Skriv ut på den skrivare som finns definierad i almaletter via
                                     // meta tag med attribute printer
