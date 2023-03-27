@@ -64,7 +64,7 @@ async function main() {
         try {
             await cmd("cupsd");
             await cmd(`lpadmin -p ${process.env.HB_PRINTER_MAILPRINT_NAME} -v smb://${process.env.PRINTER_USER}:${process.env.PRINTER_PASSWORD}@${process.env.USER_DOMAIN}/${process.env.HB_PRINTER_ADDRESS}/${process.env.HB_PRINTER_NAME} -E`);
-            await cmd(`lpadmin -p ${process.env.ALMA_PRINTER_MAILPRINT_NAME} -v ${process.env.TELGE_PRINTER_ADDRESS} -E`);
+            await cmd(`lpadmin -p ${process.env.TELGE_PRINTER_MAILPRINT_NAME} -v ${process.env.TELGE_PRINTER_ADDRESS} -E`);
             await cmd(`lpadmin -p ${process.env.WALKIN_PRINTER_MAILPRINT_NAME} -v smb://${process.env.PRINTER_USER}:${process.env.PRINTER_PASSWORD}@${process.env.USER_DOMAIN}/${process.env.HB_PRINTER_ADDRESS}/${process.env.HB_PRINTER_NAME} -E -o job-hold-until=indefinite`);
             
             console.log("This must happen last.");
