@@ -59,7 +59,7 @@ async function main() {
     let incomingmailcontent = "";
     logger.log('info',"KTH BIbliotekets Mailprint service startad");
     console.log("Mailprint service running...");
-    let printer = process.env.HB_PRINTER_MAILPRINT_NAME;
+    let printer = process.env.WALKIN_PRINTER_MAILPRINT_NAME;
     if(process.env.SERVER_OS == "linux") {
         try {
             await cmd("cupsd");
@@ -132,7 +132,7 @@ async function main() {
                                     email.html = email.html.replace("</head>",`<style>
                                             @font-face {
                                                 font-family: Code39AzaleaFont;
-                                                src: url('${appdir + printdir}fonts/Code39Azalea.ttf') format('truetype');
+                                                src: url('/app/fonts/Code39Azalea.ttf') format('truetype');
                                                 font-weight: normal;
                                                 font-style: normal;
                                             }
@@ -203,18 +203,25 @@ async function main() {
                                     await page.pdf({ format: "a5", path: maildirPath + '/' + filename + '.pdf', margin: printmargin });
                                     await browser.close();
 
+                                    let user = email.from
+                                    let hold_job = '-o job-hold-until=indefinite'
                                     //Skriv ut på den skrivare som finns definierad i almaletter via
                                     // meta tag med attribute printer
                                     const hb_regex = /printer="MAINPRINT"/;
                                     const telge_regex = /printer="TEPRINT"/;
                                     if (hb_regex.test(email.html)) {
                                         printer = process.env.HB_PRINTER_MAILPRINT_NAME
+                                        user = 'alma@ece.kth.se'
+                                        hold_job = ''
+
                                     }
                                     if (telge_regex.test(email.html)) {
                                         printer = process.env.TELGE_PRINTER_MAILPRINT_NAME
+                                        user = 'alma@ece.kth.se'
+                                        hold_job = ''
                                     }
                                     if(process.env.SERVER_OS == "linux" && process.env.PRINT_PHYSICAL == 'true') {
-                                        exec('lp -d ' + printer + ' ' + maildirPath + '/' + filename + '.pdf', (error, stdout, stderr) => {
+                                        exec('lp -d ' + printer + ' ' + maildirPath + '/' + filename + '.pdf' + ' -U ' + user, (error, stdout, stderr) => {
                                             if (error) {
                                                 logger.log('error', `${error}`)
                                                 console.error(`exec error: ${error}`);

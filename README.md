@@ -1,38 +1,20 @@
-# KTH Bibliotekets tjänst för att hantera utskrifter via mail
+# KTH Bibliotekets Mailprint
 
-## Skrivare
-    Huvudbiblioteket kontor plan3 = "\\PRINT05\KTHB_DOK_AF_MPC2550"
-    Huvudbiblioteket backoffice = "\\PRINT05\ECE_KTHB_BACKOFFICE"
-    sudo lpadmin -p alma-hb -v smb://user:password@ug.kth.se/print05.ug.kth.se/ECE_KTHB_BACKOFFICE -E
-    Kista = "\\print06\ICT-Bibliotek"
-    sudo lpadmin -p alma-kista -v smb://user:password@ug.kth.se/print06.ug.kth.se/ICT-Bibliotek -E
-    Telge = "192.168.71.103"
-    sudo lpadmin -p alma-telge -v socket://192.168.71.103:9100/ -E
-    (sudo lpadmin -p alma-telge -v ipp://192.168.71.103/ipp/print -E -m everywhere)
-    Ta bort:
-    sudo lpadmin -x skrivare
-    Lista:
-    lpstat -t
-    Enable:
-    cupsenable skrivare
+En tjänst som hanterar utskrifter främst från bibliotekssystemet Alma.
 
-    lp -d alma-hb-walkin walkin.txt -o job-hold-until=indefinite
+## Installing / Getting started
 
-### Docker
-En github action finns som skapar en ny image
-docker compose pull && docker compose up -d
-https://github.com/kaneymhf/docker-cups
-
-#### Alma letters style.xls
-```xml
-<meta name="description">
-  <xsl:attribute name="printer">
-    <xsl:value-of select="notification_data/request/note"/>
-  </xsl:attribute>
-</meta>
+```shell
+git clone repo
+docker build
+docker compose up -d
 ```
 
-##### Environment-fil
+### Initial Configuration
+
+Skapa environment fil med innehåll enligt nedan
+
+#### Environment file
 ```txt
 HB_PRINTER_NAME=ECE_KTHB_BACKOFFICE
 HB_PRINTER_ADDRESS=print05.ug.kth.se
@@ -57,6 +39,58 @@ PRINTER_USER=xxxxxx
 PRINTER_PASSWORD=xxxxxx
 MAILDIR=/maildir
 PRINTED_FOLDER=printed
-SERVER_OS=windows
+ERROR_FOLDER=error
+PRINT_PHYSICAL=true
+PRINT_KEY=xxxxxx
+SERVER_OS=linux
 ENVIRONMENT=production
 ```
+
+## Developing
+
+### Building
+
+```shell
+git push origin main / git push origin ref
+```
+
+### Deploying / Publishing
+
+En github action finns som skapar en ny image vid push till ref/main.
+
+```shell
+docker compose down
+docker compose pull
+docker compose up -d
+```
+
+## Features
+
+Skriver ut mail från bibliotekssystemet Alma
+* Skriva ut slippar
+
+## Contributing
+
+## Links
+
+- Project homepage: https://your.github.com/awesome-project/
+- Repository: https://github.com/your/awesome-project/
+
+## Licensing
+
+## Cups används för utskrifter
+    https://github.com/kaneymhf/docker-cups
+    lp -d alma-hb-walkin walkin.txt -o job-hold-until=indefinite
+
+## Alma letters style.xls
+```xml
+<meta name="kthb">
+  <xsl:attribute name="printer">
+    <xsl:value-of select="notification_data/receivers/receiver/printer/code"/>
+  </xsl:attribute>
+  <xsl:attribute name="printkey">
+      xxxxxx
+  </xsl:attribute>
+</meta>
+```
+
