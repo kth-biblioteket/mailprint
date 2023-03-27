@@ -221,7 +221,7 @@ async function main() {
                                         hold_job = ''
                                     }
                                     if(process.env.SERVER_OS == "linux" && process.env.PRINT_PHYSICAL == 'true') {
-                                        exec('lp -d ' + printer + ' ' + maildirPath + '/' + filename + '.pdf' + ' -U ' + user, (error, stdout, stderr) => {
+                                        exec('lp -d ' + printer + ' ' + maildirPath + '/' + filename + '.pdf' + ' -U ' + user + ' ' + hold_job, (error, stdout, stderr) => {
                                             if (error) {
                                                 logger.log('error', `${error}`)
                                                 console.error(`exec error: ${error}`);
