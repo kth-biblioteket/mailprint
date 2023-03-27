@@ -112,6 +112,7 @@ async function main() {
                                 outgoing_mail_message.text = ``;
                                 outgoing_mail_message.html = ``;
                                 email = await simpleParser(stream);
+                                /*
                                 if (email.html.indexOf(process.env.PRINT_KEY) !== -1) {
                                     logger.log('info', "Key is valid");
                                 } else {
@@ -127,6 +128,7 @@ async function main() {
                                     });
                                     return;
                                 }
+                                */
                                 //Se till att låntagarens barcode kommer med på fakturautskriften
                                 if(email.subject == "Lost Items Bill" || email.subject == "Lost Item Bill" || email.subject == "Räkning för borttappat material") {
                                     email.html = email.html.replace("</head>",`<style>
