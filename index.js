@@ -112,6 +112,18 @@ async function main() {
                                 outgoing_mail_message.text = ``;
                                 outgoing_mail_message.html = ``;
                                 email = await simpleParser(stream);
+                                if (email.attachments) {
+                                    email.attachments.forEach((attachment) => {
+                                      if (attachment.contentType === 'application/pdf') {
+                                        const pdfBuffer = Buffer.from(attachment.content, 'base64');
+                                        fs.writeFile("test.pdf", pdfBuffer, { encoding: 'base64' }, (err) => {
+                                            if (err) throw err;
+                                            
+                                        });
+                                      }
+                                    });
+                                }
+                                
                                 /*
                                 if (email.html.indexOf(process.env.PRINT_KEY) !== -1) {
                                     logger.log('info', "Key is valid");
@@ -206,7 +218,7 @@ async function main() {
                                     await browser.close();
 
                                     let user = email.from.value[0].address
-                                    let hold_job = '-o job-hold-until=indefinite'
+                                    let hold_job = ''
                                     //Skriv ut på den skrivare som finns definierad i almaletter via
                                     // meta tag med attribute printer
                                     const hb_regex = /printer="MAINPRINT"/;
